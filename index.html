@@ -602,6 +602,11 @@ function loadSong(i){
 
     document.getElementById('lyrics').textContent =
         letras[d.songs[i]] || 'Letra no disponible';
+
+requestAnimationFrame(() => {
+    document.getElementById('lyricsBox').scrollTop = 0;
+});
+
 }
 function pauseSong(){audio.pause();cover.classList.remove('spin');}
 function playSong(){
