@@ -49,7 +49,7 @@ audio{width:100%}
 <body>
 <header><h2>Patricio Rey y sus Redonditos de Ricota</h2>
     <p>Discografía interactiva</p>
-    <p/> By Pablo Gagliano</p>
+    <p> By Pablo Gagliano</p>
     <br>
 <img src="img/logo_pr.png" class="logo" alt="Logo PR">
 </header>
@@ -83,7 +83,11 @@ audio{width:100%}
 </div>
 
 </div>
+
 <script>
+const audio = document.getElementById("audio");
+const cover = document.getElementById("cover");
+
 const discos={
 "Gulp! (1985)":{img:"img/Gulp.jpg",folder:"Gulp",songs:["Barbazul versus el amor letal","La bestia pop","Roto y mal parado","Pierre el vitricida","Unos pocos peligros sensatos","Yo no me cai del cielo","Te voy a atornillar","Superlogico","Ñam fri fruli fali fru","El infierno esta encantador esta noche","Criminal mambo"]},
 "Oktubre (1986)":{img:"img/Oktubre.jpg",folder:"Oktubre",songs:["Fuegos de octubre","Preso en mi ciudad","Musica para pastillas","Semen Up","Divina TV Fuhrer","Motor psico","Jijiji","Cancion para naufragios","Ya nadie va a escuchar tu remera"]},
@@ -550,7 +554,31 @@ Casi ya no llora
 let currentAlbum=null,currentSong=0;
 const albums=document.getElementById("albums");
 for(let n in discos){albums.innerHTML+=`<div class='card' onclick="openAlbum('${n}')"><img src='${discos[n].img}'><h3>${n}</h3></div>`}
-function openAlbum(n){currentAlbum=n;currentSong=0;document.getElementById('albumTitle').innerText=n;document.getElementById('cover').src=discos[n].img;let ul=document.getElementById('songs');ul.innerHTML='';discos[n].songs.forEach((s,i)=>{let li=document.createElement('li');li.textContent=(i+1)+'. '+s;li.onclick=()=>loadSong(i);ul.appendChild(li);});}
+
+
+function openAlbum(n){
+currentAlbum=n;
+currentSong=0;
+
+document.getElementById('albumTitle').innerText=n;
+document.getElementById('cover').src=discos[n].img;
+
+let ul=document.getElementById('songs');
+ul.innerHTML='';
+
+discos[n].songs.forEach((s,i)=>{
+let li=document.createElement('li');
+li.textContent=(i+1)+'. '+s;
+li.onclick=()=>loadSong(i);
+ul.appendChild(li);
+});
+
+if(discos[n].songs.length>0){
+loadSong(0);
+}
+}
+
+
 function loadSong(i){
     currentSong = i;
 
@@ -558,7 +586,7 @@ function loadSong(i){
     let num = String(i+1).padStart(2,'0');
 
     audio.pause();              // opcional pero recomendado
-    audio.src = `mp3/${d.folder}/${d.songs[i]}.mp3`;
+   audio.src = `mp3/${d.folder}/${d.songs[i]}.mp3`;
 
     audio.load();               // fuerza reinicio del audio
     audio.currentTime = 0;      // empieza desde 0
@@ -569,10 +597,13 @@ function loadSong(i){
 
     document.getElementById('lyrics').textContent =
         letras[d.songs[i]] || 'Letra no disponible';
-// Volver al inicio de la letra
-    document.getElementById('lyricsBox').scrollTop = 0;
 }
 function pauseSong(){audio.pause();cover.classList.remove('spin');}
+function playSong(){
+audio.play();
+cover.classList.add('spin');
+}
+
 function nextSong(){if(currentAlbum){let d=discos[currentAlbum];loadSong((currentSong+1)%d.songs.length);}}
 function prevSong(){if(currentAlbum){let d=discos[currentAlbum];loadSong((currentSong-1+d.songs.length)%d.songs.length);}}
 audio.addEventListener('ended',nextSong);
